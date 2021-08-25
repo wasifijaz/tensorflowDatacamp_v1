@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 import matplotlib.pyplot as plt
+from tensorflow import keras
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0" #for training on gpu
 
@@ -104,26 +105,26 @@ def conv_net(x, weights, biases):
     conv1 = conv2d(x, weights['wc1'], biases['bc1'])
     # Max Pooling (down-sampling), this chooses the max value from a 2*2 matrix window and outputs a 14*14 matrix.
     conv1 = maxpool2d(conv1, k=2)
-    conv1 = tf.keras.layers.Dropout(0.25)
+    conv1 = keras.layers.Dropout(0.25)(conv1)
     
     # Convolution Layer
     # here we call the conv2d function we had defined above and pass the input image x, weights wc2 and bias bc2.
     conv2 = conv2d(conv1, weights['wc2'], biases['bc2'])
     # Max Pooling (down-sampling), this chooses the max value from a 2*2 matrix window and outputs a 7*7 matrix.
     conv2 = maxpool2d(conv2, k=2)
-    conv2 = tf.keras.layers.Dropout(0.25)
+    conv2 = keras.layers.Dropout(0.25)(conv2)
 
     conv3 = conv2d(conv2, weights['wc3'], biases['bc3'])
     # Max Pooling (down-sampling), this chooses the max value from a 2*2 matrix window and outputs a 4*4.
     conv3 = maxpool2d(conv3, k=2)
-    conv3 = tf.keras.layers.Dropout(0.4)
+    conv3 = keras.layers.Dropout(0.4)(conv3)
 
     # Fully connected layer
-    # Reshape conv2 output to fit fully connected layer input
+    # Reshape conv3 output to fit fully connected layer input
     fc1 = tf.reshape(conv3, [-1, weights['wd1'].get_shape().as_list()[0]])
     fc1 = tf.add(tf.matmul(fc1, weights['wd1']), biases['bd1'])
     fc1 = tf.nn.relu(fc1)
-    fc1 = tf.keras.layers.Dropout(0.3)
+    fc1 = keras.layers.Dropout(0.3)(fc1)
 
     # Output, class prediction
     # finally we multiply the fully connected layer with the weights and add a bias term.
