@@ -1,7 +1,5 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restx import Api, Resource, reqparse
-from numpy import empty
-from pandas.core.dtypes.missing import notnull
 import mailroomTrackingWebScraping as wc
 import time
 from werkzeug.exceptions import BadRequest
@@ -51,6 +49,11 @@ class UploadFile(Resource):
     def post(self):
         args = upload_parser.parse_args()
         file = args.get('Upload CSV File')
+        print('-'*80)
+        print(request.headers)
+        print(request.files)
+        #if request.headers.get('Accept-Encoding') is :
+
         split_tup = os.path.splitext(file.filename)
         if split_tup[1] == '.csv':
             trackingIds = wc.readCSV(file)
